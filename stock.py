@@ -10,7 +10,7 @@ data = yf.download(symbol, start=start_date, end=end_date)
 data.index.name = 'Date'
 data.index = pd.to_datetime(data.index)
 
-file_name = f"tcs_stock_{start_date}_{end_date}"
+file_name = f"dataset/tcs_stock_{start_date}_{end_date}"
 
 try:
     data.to_csv(file_name, index=True)
