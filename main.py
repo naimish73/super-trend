@@ -3,28 +3,10 @@ from functions import *
 
 status_label = ""
 symbol_list = {
-    "Aarti Industries Limited": "AARTIIND.NS",
-    "ABB Limited": "ABB.NS",
-    "Abbott India Limited": "ABBOTINDIA.NS",
-    "Aditya Birla Capital Limited": "ABCAPITAL.NS",
-    "Aditya Birla Fashion and Retail Limited": "ABFRL.NS",
-    "ACC Limited": "ACC.NS",
     "Adani Enterprises Limited": "ADANIENT.NS",
-    "Adani Ports and Special Economic Zone Limited": "ADANIPORTS.NS",
-    "Alkem Laboratories Limited": "ALKEM.NS",
-    "Ambuja Cements Limited": "AMBUJACEM.NS",
-    "Apollo Hospitals Enterprise Limited": "APOLLOHOSP.NS",
-    "Apollo Tyres Limited": "APOLLOTYRE.NS",
-    "Ashok Leyland Limited": "ASHOKLEY.NS",
-    "Asian Paints Limited": "ASIANPAINT.NS",
-    "Astral Limited": "ASTRAL.NS",
-    "Atul Limited": "ATUL.NS",
-    "AU Small Finance Bank Limited": "AUBANK.NS",
-    "Aurobindo Pharma Limited": "AUROPHARMA.NS",
-    "Axis Bank Limited": "AXISBANK.NS",
 }
 prize_range_touch = []
-count = 0
+count = 1
 
 
 def onCountdownFunctionCall():
@@ -147,6 +129,5 @@ status_label = Label(
 )
 status_label.pack(pady=0)
 
-# root.after(100, start_countdown)
-onCountdownFunctionCall()
+root.after(100, start_countdown)
 root.mainloop()
