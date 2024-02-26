@@ -34,6 +34,7 @@ def check_supertrend_range(data, super_trend):
         rangeDifference = data.iloc[i,3] * 0.01
         if abs(data.iloc[i, 3] - super_trend.iloc[i, supertrend_line]) < rangeDifference:
             # prize_range_touch.append(data.iloc[i, 3])
+            print('close_prize:', data.iloc[i, 3], ', super_trend:', super_trend.iloc[i, supertrend_line], 'range_difference:', abs(data.iloc[i, 3] - super_trend.iloc[i, supertrend_line]))
             return True
     
     return False

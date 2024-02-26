@@ -1,2 +1,6 @@
 /venv
 /test_code
+/build
+/dist
+/__pycache__
+/dataset
