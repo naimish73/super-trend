@@ -1,20 +1,10 @@
 import pandas as pd
-import pandas_ta as ta
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from yfinance import Ticker
 import numpy as np
 
-symbol = "TCS.NS"
-
-atr_length = 20
-factor = 2
-
-has_fetched_full_day_data = False
-
 def fetch_live_data(symbol):
-    global has_fetched_full_day_data, symbol_data
     latest_data = Ticker(symbol).history(interval="1m", period="1d")
-
     return latest_data
 
 def pine_supertrend(factor, atr_period, close):
@@ -48,45 +38,13 @@ def pine_supertrend(factor, atr_period, close):
     
     return super_trend, direction
 
-# Assuming close_prices is a 2D array where each row contains [open, close] prices
-close_prices = np.array([[open_price, close_price] for open_price, close_price in zip(open_prices, close_prices)])
-factor = 3
-atr_period = 10
-
-Pine_Supertrend, pineDirection = pine_supertrend(factor, atr_period, close_prices)
-
-# You can now use Pine_Supertrend and pineDirection arrays for further analysis or plotting.
-
-def plot_supertrend_with_symbol_data(super_trend, symbol_data):
+def plot_supertrend_with_symbol_data(super_trend, direction, symbol_data):
     fig, ax1 = plt.subplots()
 
-    for index, row in super_trend.iterrows():
-        print(index, row['SUPERTd_7_3.0'])
+    # Determine the color based on the direction
+    line_color = 'green' if direction[-1] == 1 else 'red'
 
-    ax1.plot(super_trend.index, super_trend['SUPERTl_7_3.0'], label="Supertrend", color='red')
-    ax1.plot(super_trend.index, super_trend['SUPERTs_7_3.0'], label="Supertrend", color='green')
-
-    ax1.set_ylabel('Supertrend', color='blue')
-    ax1.tick_params('y', colors='blue')
-
-    # Creating a second y-axis for symbol data
-    ax2 = ax1.twinx()
-    ax2.plot(symbol_data.index, symbol_data["Close"], label="Close", color='blue')  # Example: Close price
-    ax2.set_ylabel('TCS Current Prize', color='red')
-    ax2.tick_params('y', colors='red')
-
-    fig.tight_layout()
-    plt.ion()
-    plt.legend()
-    plt.show()
-    plt.pause(60)
-    plt.close()
-
-def plot_supertrend_with_symbol_data(super_trend, symbol_data):
-    fig, ax1 = plt.subplots()
-
-    ax1.plot(super_trend.index, super_trend['SUPERTl_7_3.0'], label="Supertrend Long", color='red')
-    ax1.plot(super_trend.index, super_trend['SUPERTs_7_3.0'], label="Supertrend Short", color='green')
+    ax1.plot(symbol_data.index, super_trend, label="Supertrend", color=line_color)
 
     ax1.set_ylabel('Supertrend')
     ax1.tick_params('y')
@@ -102,11 +60,24 @@ def plot_supertrend_with_symbol_data(super_trend, symbol_data):
     plt.pause(60)
     plt.close()
 
-def main(symbol):
-    global atr_length, factor
-    data = fetch_live_data(symbol)
-    super_trend = calculate_supertrend(data)
-    print('super_trend:', atr_length, factor, super_trend)
-    # plot_supertrend_with_symbol_data(super_trend, data)
 
-main(symbol)
+
+def main(symbol, factor, atr_period):
+    while True:
+        symbol_data = fetch_live_data(symbol)
+        close_prices = symbol_data[['Open', 'Close']].values
+        super_trend, direction = pine_supertrend(factor, atr_period, close_prices)
+        plot_supertrend_with_symbol_data(super_trend, direction, symbol_data)
+        # Calculate 1% of stock price
+        one_percent_price = symbol_data["Close"] * 0.01
+        # Check if the difference between supertrend and close price is less than 1% of stock price
+        if abs(super_trend[-1] - symbol_data["Close"].iloc[-1]) < one_percent_price.iloc[-1]:
+            print("Supertrend:", super_trend[-1])
+            print("Close Price:", symbol_data["Close"].iloc[-1])
+            print("1% of Stock Price:", one_percent_price.iloc[-1])
+            break  # Exit loop if condition met
+
+symbol = "TCS.NS"
+factor = 2
+atr_period = 20
+main(symbol, factor, atr_period)
