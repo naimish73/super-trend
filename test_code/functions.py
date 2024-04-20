@@ -12,7 +12,7 @@ def fetch_realtime_data(symbol):
 
 # Calculate superternd
 def calculate_supertrend(data):
-    super_trend = ta.supertrend(data['High'], data['Low'], data['Close'], atr=20, multiplier=2)
+    super_trend = ta.supertrend(data['High'], data['Low'], data['Close'], factor=20, atrPeriod=2)
     return super_trend
 
 
