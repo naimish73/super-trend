@@ -1,0 +1,24 @@
+//@version=5
+indicator("Supertrend with Alert", overlay = true, timeframe = "", timeframe_gaps = true)
+
+// Input parameters
+atrLength = input.int(10, "ATR Length", minval = 1)
+factor = input.float(3.0, "Factor", minval = 0.01, step = 0.01)
+alertPercent = input.float(1.0, "Alert Percent", minval = 0.01, step = 0.01)
+
+// Calculate Supertrend
+[supertrend, direction] = ta.supertrend(factor, atrLength)
+
+// Plot Supertrend and Direction
+plot(supertrend, "Supertrend", color = color.blue)
+plotshape(direction == 1 ? supertrend : na, style = shape.triangleup, location = location.belowbar, color = color.green, size = size.small)
+plotshape(direction == -1 ? supertrend : na, style = shape.triangledown, location = location.abovebar, color = color.red, size = size.small)
+
+// Calculate range difference for alert
+rangeDiff = high - low
+alertValue = supertrend + (rangeDiff * alertPercent / 100)
+
+// Alert conditions
+alertUp = close > alertValue[1] and close <= alertValue
+alertDown = close < alertValue[1] and close >= alertValue
+alertcondition(alertUp or alertDown, title = "Supertrend Alert", message = "Supertrend touched within 1% of range difference")
