@@ -1,5 +1,5 @@
 from tkinter import Tk, Label, Frame, StringVar, Scrollbar, Frame, Canvas
-from functions import *
+from test_code.functions import *
 
 status_label = ""
 symbol_list = {

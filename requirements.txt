@@ -1,0 +1,9 @@
+algomojo==1.4
+matplotlib==3.8.4
+numpy==1.26.4
+pandas==2.2.2
+pandas_ta==0.3.14b0
+plotly==5.19.0
+QuantConnect==0.1.0
+streamlit==1.32.0
+yfinance==0.2.37
