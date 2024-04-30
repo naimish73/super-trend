@@ -1,9 +1,28 @@
 from tkinter import Tk, Label, Frame, StringVar, Scrollbar, Frame, Canvas
-from test_code.functions import *
+from functions import *
+from symbolList import symbol_list
 
 status_label = ""
 symbol_list = {
+    "Aarti Industries Limited": "AARTIIND.NS",
+    "ABB Limited": "ABB.NS",
+    "Abbott India Limited": "ABBOTINDIA.NS",
+    "Aditya Birla Capital Limited": "ABCAPITAL.NS",
+    "Aditya Birla Fashion and Retail Limited": "ABFRL.NS",
+    "ACC Limited": "ACC.NS",
     "Adani Enterprises Limited": "ADANIENT.NS",
+    "Adani Ports and Special Economic Zone Limited": "ADANIPORTS.NS",
+    "Alkem Laboratories Limited": "ALKEM.NS",
+    "Ambuja Cements Limited": "AMBUJACEM.NS",
+    "Apollo Hospitals Enterprise Limited": "APOLLOHOSP.NS",
+    "Apollo Tyres Limited": "APOLLOTYRE.NS",
+    "Ashok Leyland Limited": "ASHOKLEY.NS",
+    "Asian Paints Limited": "ASIANPAINT.NS",
+    "Astral Limited": "ASTRAL.NS",
+    "Atul Limited": "ATUL.NS",
+    "AU Small Finance Bank Limited": "AUBANK.NS",
+    "Aurobindo Pharma Limited": "AUROPHARMA.NS",
+    "Axis Bank Limited": "AXISBANK.NS",
 }
 prize_range_touch = []
 count = 1
@@ -17,8 +36,8 @@ def onCountdownFunctionCall():
 
     for name, sbl in symbol_list.items():
         data = fetch_realtime_data(sbl)
-        super_trend = calculate_supertrend(data)
-        check_range = check_supertrend_range(data, super_trend)
+        merged_data = calculate_supertrend(data)
+        check_range = check_supertrend_range(merged_data)
 
         if check_range:
             prize_range_touch.append(name)
