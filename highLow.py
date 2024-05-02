@@ -1,12 +1,12 @@
 import yfinance as yf
 import datetime as dt
 
-import os
-import sys
-current_dir = os.path.dirname(os.path.realpath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+# import os
+# import sys
+# current_dir = os.path.dirname(os.path.realpath(__file__))
+# parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
 
-sys.path.append(parent_dir)
+# sys.path.append(parent_dir)
 from symbolList import symbol_list
 
 # symbol_list = {
@@ -70,7 +70,7 @@ def get52WeekHighLow():
             elif status == "52 Week Low":
                 stocks_52_week_low.append(company)
         except Exception as e:  
-            print(f'Error in stock {symbol_list[symbol]}:', e)
+            print(f'Error in stock {symbol}:', e)
             continue
 
     # print("Stocks at 52 Week High today:")
