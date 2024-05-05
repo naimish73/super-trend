@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from highLow import get52WeekHighLow
+from high_low_52_week.highLow2 import get52WeekHighLow
 
 # Main function to run the Streamlit web app
 def main():
