@@ -1,54 +1,28 @@
 import pandas as pd
-import pandas_ta as ta
-import yfinance as yf
-import datetime as dt
-import pandas_ta as ta
 import streamlit as st
-import plotly.graph_objects as go
-from  symbolList import symbol_list
 import numpy as np
+import yfinance as yf
+import pandas_ta as ta
+# Assuming you have symbol_list and other relevant data ready
+from symbolList import symbol_list
 
 st.set_page_config(page_title="Stock Price Analysis", page_icon="📈", layout="wide")
 
-# symbol_list = {
-#     "Infosys Limited": "INFY.NS",
-#     "Deepak Nitrite Limited": "DEEPAKNTR.NS",
-#     "Delta Corp Limited": "DELTACORP.NS",
-#     "Divis Laboratories Limited": "DIVISLAB.NS",
-#     "Dixon Technologies (India) Limited": "DIXON.NS",
+symbol_list = {
+    "Infosys Limited": "INFY.NS",
+    "Deepak Nitrite Limited": "DEEPAKNTR.NS",
+    "Delta Corp Limited": "DELTACORP.NS",
+    "Divis Laboratories Limited": "DIVISLAB.NS",
+    "Dixon Technologies (India) Limited": "DIXON.NS",
     
-# }
-# st.session_state['s']= 0
-# if st.session_state.s==0:
-#     st.session_state.s+=1
-#     try:
-#         stocks= sl.symbol_list
-#         companies = stocks.keys()
-#     except:
-#         st.write("Error in fetching data from database")
-#         st.stop()
-
-# company=st.selectbox("Select Company",companies)
-# symbol = stocks.get(company)x
-
-# st.write(f"Selected Company: {company}")
-
-# with st.sidebar:
-#     st.sidebar.markdown(' # Stock Price Analysis ')
-#     st.sidebar.title(f"Welcome ")
-#     dtnow = dt.datetime.now()
-        
-#     DAY = dtnow.strftime('%A')
-   
-#     if DAY == 'Saturday' or DAY == 'Sunday':
-#         start_date =  dtnow.today() - dt.timedelta(days=3)    
-#         end_date = dtnow.today() - dt.timedelta(days=2)
-#     else:
-#         start_date = dtnow.today()
-#         end_date = dtnow.today() + dt.timedelta(days=1)
-
-#     start_date = st.sidebar.date_input("start date", start_date)
-#     end_date = st.sidebar.date_input("End date",end_date)
+}
+name = []
+sup_trend = []
+close_price = []
+filtered_data = []
+range_diffrence = []
+range_abs_difference = []
+chart_links = []  # List to hold TradingView chart links
 
 def Fetch_data(symbol, timeframe, period):
 
@@ -103,15 +77,8 @@ def Fetch_data(symbol, timeframe, period):
 
     return merged_df
 
-name=[]
-sup_trend=[]
-close_price=[]
-filtered_data=[]
-range_diffrence=[]
-range_abs_difference=[]
 
-
-def check_supertrend_range(merge_data,Name):
+def check_supertrend_range(merge_data,Name,symbol):
     # prize_range_touch = []
     # print(merge_data.columns)
     # print(merge_data)
@@ -145,72 +112,78 @@ def check_supertrend_range(merge_data,Name):
             range_diffrence.append(rangeDifference)
             range_abs_difference.append(range_abs_diff)
 
+            # Construct TradingView chart link
+            symbol = symbol.split(".")[0]
+            chart_link = f"https://www.tradingview.com/chart/?symbol=NSE:{symbol}&interval=1&range=1&style=1&timezone=Asia%2FKolkata&theme=dark&studies=%5B%5D&study1=SuperTrend&interval=1&range=1"
+            chart_links.append(chart_link)
+
+
             print(Name,'Date',merge_data.iloc[i,0],'close_prize:', merge_data.iloc[i, 4], 'super_trend:', merge_data.iloc[i, supertrend_line], 'range_difference:', range_abs_diff)
             return True
         
     return False
 
-
-def plot_graph(df):
-    fig = go.Figure()
-    fig.add_trace(go.Candlestick(x=df['Datetime'], open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='market data'))
-    fig.add_trace(go.Scatter(x=df['Datetime'], y=df['SUPERTl_20_2.0'], name='Supertrend Long', line=dict(color='green')))
-    fig.add_trace(go.Scatter(x=df['Datetime'], y=df['SUPERTs_20_2.0'], name='Supertrend Short', line=dict(color='red')))
-    fig.update_layout(
-        title='Stock Price with Supertrend', 
-        xaxis_title='Datetime', 
-        yaxis_title='Price',
-        width=1500, 
-        height=500,
-        template='plotly_dark',  
-    )
-
-    # Modify candlestick style to Yahoo Finance style
-    fig.update_traces(
-        line=dict(width=1),            # Width of scatter plot lines
-    )
-
-
-    st.plotly_chart(fig)
-
-
 def show_filtered_stocks(company_name,symbol,tf,pr):
     df=Fetch_data(symbol,timeframe=tf, period=pr)
     if len(df) != 0:
-        check_range = check_supertrend_range(df,company_name)
+        check_range = check_supertrend_range(df,company_name,symbol)
 
       
     else:
         st.stop()
-                
-    
+
+def Find_Company_name(symbol):
+    symbol= symbol + ".NS"
+    for key, value in symbol_list.items():
+        if value == symbol:
+            return key
+
 def app():
-    
-    Timeframe = ["1m", "5m", "15m", "30m", "1h",'1d']
+    Timeframe = ["1m", "5m", "15m", "30m", "1h", '1d']
     period = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max']
-    tf,pr=st.columns(2)
+    tf, pr = st.columns(2)
     tf = tf.selectbox("Select Timeframe", Timeframe)
     pr = pr.selectbox("Select Period", period)
-    save = st.button("scan")
+    save = st.button("Scan")
 
     if period == "6mo":
         if Timeframe != "1d":
             st.warning("Timeframe should be 1d for 6 months period")
-            Timeframe= "1d"
+            Timeframe = "1d"
 
     if save:
-        
         with st.spinner("Fetching data ..."):
-            for Company_name,symbol in symbol_list.items():
-                
+            for Company_name, symbol in symbol_list.items():
+                show_filtered_stocks(Company_name, symbol, tf, pr)
 
-                show_filtered_stocks(Company_name,symbol,tf,pr)
-      
-        data = {'Company Name': name, 'Date': filtered_data, 'Close Price': close_price,'Supertrend': sup_trend , 'Range Difference': range_diffrence, 'Range Abs Difference': range_abs_difference}
+        data = {
+            'Company Name': name,
+            'Date': filtered_data,
+            'Close Price': close_price,
+            'Supertrend': sup_trend,
+            'Range Difference': range_diffrence,
+            'Range Abs Difference': range_abs_difference,
+            'TradingView Chart': chart_links  # Adding TradingView chart links to the data
+        }
         df = pd.DataFrame(data)
         
-        st.table(df)
-        
+
+        st.data_editor(
+            df,
+            column_config={
+                # "Company Name": st.column_config.LinkColumn(
+                #     validate="TradingView Chart",
+                #     help="Click to view TradingView chart"
+                    
+                # ),
+                 "TradingView Chart": st.column_config.LinkColumn(
+                    validate="TradingView Chart",
+                    help="Click to view TradingView chart",
+                    display_text="Open Chart"
+                )
+            },
+            hide_index=True
+        )
 
 if __name__ == "__main__":
     app()
