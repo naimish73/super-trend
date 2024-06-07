@@ -106,7 +106,7 @@ symbol_list = {
     "JSW Steel Limited": "JSWSTEEL.NS",
     "Jubilant Foodworks Limited": "JUBLFOOD.NS",
     "Kotak Mahindra Bank Limited": "KOTAKBANK.NS",
-    "L&T Finance Holdings Limited": "L&TFH.NS",
+    # "L&T Finance Holdings Limited": "L&TFH.NS",
     "Dr. Lal PathLabs Limited": "LALPATHLAB.NS",
     "Laurus Labs Limited": "LAURUSLABS.NS",
     "LIC Housing Finance Limited": "LICHSGFIN.NS",
